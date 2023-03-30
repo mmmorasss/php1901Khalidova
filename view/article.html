@@ -1,0 +1,89 @@
+<div id="articleDiv"></div>
+<div class="row">
+    <form onsubmit="addComment(); return false;" class="my-4">
+        <div class="mb-3">
+            <textarea id="commentTextArea" name="comment" class="form-control" placeholder="Комментарий"></textarea>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Добавить комментарий">
+    </form>
+</div>
+<div id="commentDiv"></div>
+<script>
+    // Считывам id статьи из URI в переменную articleId
+    let articleId = location.pathname.split('/')[2];
+    let container = document.getElementById('container');
+    let commentTextArea = document.getElementById('commentTextArea');
+    let articleDiv = document.getElementById('articleDiv');
+    let commentDiv = document.getElementById('commentDiv');
+    let formData = new FormData();
+    formData.append("article_id", articleId);
+    fetch('/article', {
+        method: "POST",
+        body: formData
+    }).then(response=>response.json()) // function(response){return response.json()}
+        .then(result=>{
+            console.log(result);
+            articleDiv.innerHTML = `
+                <h1 class="text-center my-3">${result.title}</h1>
+                <div class="my-3">${result.content}</div>
+                <div class="row">
+                    <div class="col-6 text-start">
+                        Автор: ${result.author}
+                    </div>
+                    <div class="col-6 text-end">
+                        <a href="/deleteArticle/?id=${result.id}">[удалить]</a>
+                    </div>
+                </div>
+            `;
+        })
+    getComment();
+
+    function getComment(){
+        fetch('/getCommentByArticleId', {
+            method: "POST",
+            body: formData
+        }).then(response=>response.json())
+            .then(result=>{
+                for (let i = 0; i < result.length; i++) {
+                    renderComment(result[i].name+" "+result[i].lastname, result[i].comment);
+                }
+                console.log(result);
+            })
+    }
+
+    function renderComment(user, comment){
+        let card = document.createElement("div");
+        let cardHeader = document.createElement("div");
+        let cardBody = document.createElement("div");
+        let cardText = document.createElement("p");
+        card.classList.add("card", "mb-3");
+        cardHeader.classList.add("card-header");
+        cardBody.classList.add("card-body");
+        cardText.classList.add("card-text");
+        cardHeader.innerText = user;
+        cardText.innerText = comment;
+        cardBody.append(cardText);
+        card.append(cardHeader);
+        card.append(cardBody);
+        commentDiv.prepend(card);
+    }
+
+    function addComment(){
+        let formData = new FormData();
+        formData.append('article_id', articleId);
+        formData.append(commentTextArea.name, commentTextArea.value);
+        fetch("/addComment", {
+            method: "POST",
+            body: formData
+        }).then(response=>response.json())
+            .then(result=>{
+                console.log(result);
+                if(result.result == "success") {
+                    renderComment(undefined, commentTextArea.value);
+                    commentTextArea.value = "";
+                }
+            })
+    }
+
+
+</script>

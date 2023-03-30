@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <style>
+            body{
+                background: url("https://wallpaperaccess.com/full/4107808.jpg");
+                background-size: cover;
+            }
+            #plane{
+                width: 300px;
+                transform: scale(-1,1);
+                position: absolute;
+                left: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <img id="plane" src="/img/pngimg.com - plane_PNG5237.png" alt="">
+        <script>
+            let plane = document.getElementById('plane');
+            let planeX=0;
+            let moveToRight = true;
+            plane.onclick = function (){
+                let skydiver = document.createElement('img');
+                skydiver.src = "/img/jw-project-01.gif";
+                skydiver.style.width = "100px";
+                skydiver.style.position = "absolute";
+                let skydiverY = 100;
+                let skydiverX = planeX;
+                skydiver.style.left = planeX+50+"px";
+                skydiver.style.top = skydiverY+"px";
+                document.body.append(skydiver);
+                let timerId = setInterval(function (){
+                    if(skydiverY >= 300){
+                        skydiver.src = "/img/skydiver.png";
+                        skydiver.style.width = "200px";
+                    }else if(skydiverY < 400){
+                        skydiverY += 2;
+                    }
+                    if(window.innerHeight-skydiver.getBoundingClientRect().height <= skydiverY){
+                        skydiver.style.width = "100px";
+                        skydiver.style.top = (skydiverY+150)+"px";
+                        skydiver.src = "/img/jw-project-03.png";
+                        clearInterval(timerId);
+                    }else{
+                        skydiver.style.top = (++skydiverY)+"px";
+                        if(moveToRight)
+                            skydiverX = skydiverX+(Math.random()*2);
+                        else
+                            skydiverX = skydiverX-(Math.random()*2);
+                        skydiver.style.left = skydiverX+"px";
+                    }
+                }, 40);
+            }
+            setInterval(movePlane, 40)
+            function movePlane(){
+                if(planeX >= window.innerWidth-300){
+                    moveToRight = false;
+                    plane.style.transform = "scale(1,1)";
+                }else if( planeX <= 0){
+                    moveToRight = true;
+                    plane.style.transform = "scale(-1,1)";
+                }
+
+                if(moveToRight){
+                    plane.style.left = (++planeX)+"px";
+                }else{
+                    plane.style.left = (--planeX)+"px";
+                }
+            }
+        </script>
+    </body>
+</html>

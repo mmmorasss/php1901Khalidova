@@ -1,0 +1,33 @@
+<h1 class="text-center my-3">Авторизация</h1>
+<div class="col-md-5 mx-auto">
+    <form onsubmit="sendForm(this); return false;">
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-at"></i></span>
+            <input name="email" required type="email" class="form-control" placeholder="E-mail">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            <input name="pass" required type="password" class="form-control" placeholder="Пароль">
+            <p class="w-100" style="color: red" hidden id="info">Неправильный логин или пароль</p>
+        </div>
+        <div class="mb-3">
+            <input type="submit" class="form-control btn btn-primary">
+        </div>
+    </form>
+</div>
+<script>
+    let info = document.getElementById('info');
+    function sendForm(form){
+        let formData = new FormData(form);
+        fetch('/login', {
+            method: "POST",
+            body: formData
+        }).then(response=>response.json())
+            .then(result=>{
+                if (result.result == "error")
+                    info.hidden = false;
+                else if (result.result == "success")
+                    location.href = '/profile';
+            })
+    }
+</script>

@@ -1,0 +1,23 @@
+<script>
+    let container = document.getElementById("container");
+    fetch("/getArticles")
+    .then(function (response){return response.json()})
+    .then(function (result){
+        for (let i = 0; i < result.length; i++) {
+            console.log("Заголовок", result[i].title);
+            console.log("Контент", result[i].content);
+            console.log("Автор", result[i].author);
+            container.innerHTML += `
+                <div class="card w-100 mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title">${result[i].title}</h5>
+                    <p class="card-text">
+                        ${result[i].content}
+                    </p>
+                    <a href="/article/${result[i].id}" class="btn btn-primary">Читать далее>>></a>
+                  </div>
+                </div>
+            `;
+        }
+    })
+</script>

@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-sm-3">
+        <img src="" alt="" id="userAvatar" width="100%">
+        <form action="/updateUserAvatar" enctype="multipart/form-data" method="post">
+            <input type="file" name="userfile">
+            <input type="submit" value="сохранить">
+        </form>
+    </div>
+    <div class="col-sm-9">
+        <p>id: <span id="userId"></span></p>
+        <p>Имя: <span id="userName"></span></p>
+        <p>Фамилия: <span id="userLastname"></span></p>
+        <p>E-mail: <span id="userEmail"></span></p>
+    </div>
+</div>
+<script>
+    let userAvatar = document.getElementById('userAvatar');
+    let userName = document.getElementById('userName');
+    let userLastname = document.getElementById('userLastname');
+    let userEmail = document.getElementById('userEmail');
+    let userId = document.getElementById('userId');
+    fetch('/getAuthUserData')
+        .then(response=>response.json())
+        .then(result=>{
+            userAvatar.src = result.img;
+            userName.innerText = result.name;
+            userLastname.innerText = result.lastname;
+            userEmail.innerText = result.email;
+            userId.innerText = result.id;
+        })
+</script>
